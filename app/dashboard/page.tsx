@@ -311,6 +311,37 @@ export default function DashboardPage() {
     setSelectedStage(undefined)
   }
 
+  const generateCSVReport = () => {
+    const headers = ['Title', 'Client', 'Stage', 'Status', 'Priority', 'Progress', 'Budget', 'Start Date', 'End Date'];
+    const rows = filteredProjects.map(project => [
+      project.title,
+      project.client,
+      initialKanbanColumns.find(s => s.id === project.stage)?.title || project.stage,
+      project.status,
+      project.priority,
+      `${project.progress}%`,
+      project.budget ? `${project.currency} ${project.budget}` : '',
+      project.startDate ? formatDate(project.startDate) : '',
+      project.endDate ? formatDate(project.endDate) : ''
+    ]);
+    
+    return [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+  };
+
+  const downloadCSV = (csvData: string, filename: string) => {
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   const handleSort = (field: keyof Project) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
@@ -1021,22 +1052,96 @@ export default function DashboardPage() {
               <CardContent>
                 <ScrollArea className="h-[300px]">
                   <div className="space-y-4">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback>U{i}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-1">
-                          <p className="text-sm">
-                            <span className="font-medium">User {i}</span>
-                            {" "}updated project status
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {i} hours ago
-                          </p>
-                        </div>
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-blue-100 text-blue-600">JD</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">John Doe</span> moved{" "}
+                          <span className="text-blue-600 font-medium">Brand Story</span> to Client Review
+                        </p>
+                        <p className="text-xs text-muted-foreground">2 minutes ago</p>
                       </div>
-                    ))}
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-green-100 text-green-600">SW</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">Sarah Williams</span> completed{" "}
+                          <span className="text-green-600 font-medium">color grading</span> for City Lights
+                        </p>
+                        <p className="text-xs text-muted-foreground">1 hour ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-orange-100 text-orange-600">MJ</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">Mike Johnson</span> uploaded{" "}
+                          <span className="text-orange-600 font-medium">raw footage</span> for Mountain Echoes
+                        </p>
+                        <p className="text-xs text-muted-foreground">3 hours ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-purple-100 text-purple-600">JS</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">Jane Smith</span> added{" "}
+                          <span className="text-purple-600 font-medium">new scene notes</span> to City Lights script
+                        </p>
+                        <p className="text-xs text-muted-foreground">5 hours ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-teal-100 text-teal-600">AC</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">Alex Chen</span> finished{" "}
+                          <span className="text-teal-600 font-medium">audio mixing</span> for Brand Story
+                        </p>
+                        <p className="text-xs text-muted-foreground">1 day ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-red-100 text-red-600">JD</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">John Doe</span> created new project{" "}
+                          <span className="text-red-600 font-medium">Tech Startup Promo</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">2 days ago</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-indigo-100 text-indigo-600">SW</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm">
+                          <span className="font-medium">Sarah Williams</span> updated{" "}
+                          <span className="text-indigo-600 font-medium">delivery timeline</span> for Mountain Echoes
+                        </p>
+                        <p className="text-xs text-muted-foreground">2 days ago</p>
+                      </div>
+                    </div>
                   </div>
                 </ScrollArea>
               </CardContent>
@@ -1053,46 +1158,95 @@ export default function DashboardPage() {
                       className="w-full justify-start items-center" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => alert("Export functionality coming soon")}
+                      onClick={() => {
+                        setSelectedStage(undefined)
+                        setAddCardModalOpen(true)
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>New Project</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Create a new film project</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      className="w-full justify-start items-center" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        const csvContent = generateCSVReport()
+                        downloadCSV(csvContent, 'projects-report.csv')
+                      }}
                     >
                       <Download className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <span>Export Report</span>
+                      <span>Export Projects</span>
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Export project data as PDF or CSV</p>
+                    <p>Download projects as CSV file</p>
                   </TooltipContent>
                 </Tooltip>
+                
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
                       className="w-full justify-start items-center" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => alert("Meeting scheduling coming soon")}
+                      onClick={() => setViewMode("calendar")}
                     >
                       <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <span>Schedule Meeting</span>
+                      <span>View Calendar</span>
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Schedule a team meeting</p>
+                    <p>Switch to calendar timeline view</p>
                   </TooltipContent>
                 </Tooltip>
+                
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button 
                       className="w-full justify-start items-center" 
                       variant="outline" 
                       size="sm"
-                      onClick={() => alert("Team invitation coming soon")}
+                      onClick={() => {
+                        setFilterValue("active")
+                        setViewMode("list")
+                      }}
                     >
-                      <Users className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <span>Invite Team Member</span>
+                      <TrendingUp className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>Active Projects</span>
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Add new members to your team</p>
+                    <p>View all active projects in list format</p>
+                  </TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      className="w-full justify-start items-center" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        setSearchQuery("")
+                        setFilterValue("all")
+                        setViewMode("kanban")
+                      }}
+                    >
+                      <Search className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>Clear Filters</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Reset all filters and show all projects</p>
                   </TooltipContent>
                 </Tooltip>
               </CardContent>
