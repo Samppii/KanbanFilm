@@ -131,18 +131,53 @@ export default function DashboardPage() {
 
   // Sync URL parameters with local state on client side
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const urlSearch = urlParams.get('search')
-      const urlFilter = urlParams.get('filter')
-      
-      if (urlSearch) {
-        setSearchQuery(urlSearch)
+    const handleUrlChange = () => {
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search)
+        const urlSearch = urlParams.get('search')
+        const urlFilter = urlParams.get('filter')
+        
+        console.log('URL params:', { urlSearch, urlFilter }) // Debug log
+        
+        if (urlSearch) {
+          setSearchQuery(urlSearch)
+        } else {
+          setSearchQuery('') // Clear search if no URL param
+        }
+        
+        if (urlFilter && ['all', 'active', 'completed', 'on-hold', 'archived'].includes(urlFilter)) {
+          setFilterValue(urlFilter)
+        } else {
+          setFilterValue('all') // Reset to all if no valid filter
+        }
       }
-      
-      if (urlFilter && ['all', 'active', 'completed', 'on-hold', 'archived'].includes(urlFilter)) {
-        setFilterValue(urlFilter)
-      }
+    }
+
+    // Initial load
+    handleUrlChange()
+    
+    // Listen for URL changes (back/forward buttons)
+    window.addEventListener('popstate', handleUrlChange)
+    
+    // Listen for custom search events from navigation
+    const handleSearchChange = (event: CustomEvent) => {
+      const { query } = event.detail
+      setSearchQuery(query || '')
+    }
+    
+    // Listen for custom filter events from navigation
+    const handleFilterChange = (event: CustomEvent) => {
+      const { filter } = event.detail
+      setFilterValue(filter || 'all')
+    }
+    
+    window.addEventListener('searchChange', handleSearchChange as EventListener)
+    window.addEventListener('filterChange', handleFilterChange as EventListener)
+    
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange)
+      window.removeEventListener('searchChange', handleSearchChange as EventListener)
+      window.removeEventListener('filterChange', handleFilterChange as EventListener)
     }
   }, [])
   const [sortField, setSortField] = useState<keyof Project>('updatedAt')

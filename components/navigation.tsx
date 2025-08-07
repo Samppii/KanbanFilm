@@ -11,21 +11,46 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { AddProjectModal } from "@/components/add-project-modal"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export function Navigation() {
   const router = useRouter()
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false)
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false)
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
   
   const handleNavigation = (path: string) => {
     router.push(path)
   }
   
+  const handleFilter = (filterValue: string) => {
+    const url = `/dashboard?filter=${filterValue}`
+    router.push(url)
+    // Dispatch custom event to notify dashboard of filter change
+    window.dispatchEvent(new CustomEvent('filterChange', { detail: { filter: filterValue } }))
+  }
+  
   const handleSearch = (query: string) => {
-    if (query.trim()) {
-      router.push(`/dashboard?search=${encodeURIComponent(query)}`)
-    } else {
-      router.push('/dashboard')
+    // Clear existing timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout)
     }
+    
+    // Set a new timeout to debounce the search
+    const timeout = setTimeout(() => {
+      if (query.trim()) {
+        const url = `/dashboard?search=${encodeURIComponent(query)}`
+        router.push(url)
+        // Dispatch custom event to notify dashboard of search change
+        window.dispatchEvent(new CustomEvent('searchChange', { detail: { query } }))
+      } else {
+        router.push('/dashboard')
+        window.dispatchEvent(new CustomEvent('searchChange', { detail: { query: '' } }))
+      }
+    }, 300) // 300ms debounce
+    
+    setSearchTimeout(timeout)
   }
 
   return (
@@ -62,7 +87,7 @@ export function Navigation() {
                     <li>
                       <NavigationMenuLink asChild>
                         <button 
-                          onClick={() => handleNavigation("/dashboard?filter=active")} 
+                          onClick={() => handleFilter("active")} 
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left"
                         >
                           <div className="text-sm font-medium leading-none">Active Projects</div>
@@ -75,7 +100,7 @@ export function Navigation() {
                     <li>
                       <NavigationMenuLink asChild>
                         <button 
-                          onClick={() => handleNavigation("/dashboard?filter=completed")} 
+                          onClick={() => handleFilter("completed")} 
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left"
                         >
                           <div className="text-sm font-medium leading-none">Completed</div>
@@ -88,7 +113,7 @@ export function Navigation() {
                     <li>
                       <NavigationMenuLink asChild>
                         <button 
-                          onClick={() => alert('Templates feature coming soon!')} 
+                          onClick={() => setIsTemplatesModalOpen(true)} 
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left"
                         >
                           <div className="text-sm font-medium leading-none">Templates</div>
@@ -237,6 +262,128 @@ export function Navigation() {
           setIsNewProjectModalOpen(false)
         }}
       />
+      
+      {/* Templates Modal */}
+      <Dialog open={isTemplatesModalOpen} onOpenChange={setIsTemplatesModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Project Templates</DialogTitle>
+            <DialogDescription>
+              Choose from pre-built project templates to quickly set up your film projects
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+              setIsTemplatesModalOpen(false)
+              setIsNewProjectModalOpen(true)
+            }}>
+              <CardHeader>
+                <CardTitle className="text-lg">Commercial Video</CardTitle>
+                <CardDescription>Standard commercial video project</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Pre-production planning</li>
+                  <li>• Script and storyboard</li>
+                  <li>• Location scouting</li>
+                  <li>• Post-production workflow</li>
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+              setIsTemplatesModalOpen(false)
+              setIsNewProjectModalOpen(true)
+            }}>
+              <CardHeader>
+                <CardTitle className="text-lg">Documentary</CardTitle>
+                <CardDescription>Documentary film project template</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Research and interviews</li>
+                  <li>• Archival footage collection</li>
+                  <li>• Narrative structure</li>
+                  <li>• Color grading workflow</li>
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+              setIsTemplatesModalOpen(false)
+              setIsNewProjectModalOpen(true)
+            }}>
+              <CardHeader>
+                <CardTitle className="text-lg">Music Video</CardTitle>
+                <CardDescription>Music video production template</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Concept development</li>
+                  <li>• Performance capture</li>
+                  <li>• Creative editing</li>
+                  <li>• Audio sync workflow</li>
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+              setIsTemplatesModalOpen(false)
+              setIsNewProjectModalOpen(true)
+            }}>
+              <CardHeader>
+                <CardTitle className="text-lg">Corporate Video</CardTitle>
+                <CardDescription>Corporate and training video template</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Message clarity focus</li>
+                  <li>• Professional presentation</li>
+                  <li>• Brand guidelines</li>
+                  <li>• Multi-format delivery</li>
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+              setIsTemplatesModalOpen(false)
+              setIsNewProjectModalOpen(true)
+            }}>
+              <CardHeader>
+                <CardTitle className="text-lg">Short Film</CardTitle>
+                <CardDescription>Independent short film template</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Creative storytelling</li>
+                  <li>• Budget management</li>
+                  <li>• Festival preparation</li>
+                  <li>• Distribution strategy</li>
+                </ul>
+              </CardContent>
+            </Card>
+            
+            <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => {
+              setIsTemplatesModalOpen(false)
+              setIsNewProjectModalOpen(true)
+            }}>
+              <CardHeader>
+                <CardTitle className="text-lg">Animation Project</CardTitle>
+                <CardDescription>2D/3D animation project template</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Asset creation pipeline</li>
+                  <li>• Animation workflow</li>
+                  <li>• Rendering optimization</li>
+                  <li>• Final compositing</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
