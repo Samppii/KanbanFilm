@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Film, Bell, Search, Plus, Settings, LogOut, User, LayoutDashboard, Calendar, Users, BarChart3, TrendingUp } from "lucide-react"
+import { Film, Bell, Search, Plus, Settings, LogOut, User, LayoutDashboard, Calendar, Users, BarChart3, TrendingUp, Clock, AlertCircle, CheckCircle, Info, X, Camera, MapPin, Globe, Phone, Mail } from "lucide-react"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -16,6 +16,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
+import { Textarea } from "@/components/ui/textarea"
 
 export function Navigation() {
   const router = useRouter()
@@ -25,6 +26,8 @@ export function Navigation() {
   const [isTeamScheduleModalOpen, setIsTeamScheduleModalOpen] = useState(false)
   const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false)
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
   
   const handleNavigation = (path: string) => {
@@ -206,7 +209,12 @@ export function Navigation() {
           </div>
           
           <nav className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="relative">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="relative"
+              onClick={() => setIsNotificationsOpen(true)}
+            >
               <Bell className="h-5 w-5" />
               <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
                 3
@@ -241,7 +249,7 @@ export function Navigation() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsProfileModalOpen(true)}>
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
@@ -1398,6 +1406,496 @@ export function Navigation() {
               </div>
             </TabsContent>
           </Tabs>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Notifications Modal */}
+      <Dialog open={isNotificationsOpen} onOpenChange={setIsNotificationsOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Bell className="h-5 w-5" />
+              Notifications
+            </DialogTitle>
+            <DialogDescription>
+              Stay updated with project updates, deadlines, and team activities
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="all" className="py-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="all">All (7)</TabsTrigger>
+              <TabsTrigger value="projects">Projects (3)</TabsTrigger>
+              <TabsTrigger value="team">Team (2)</TabsTrigger>
+              <TabsTrigger value="system">System (2)</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="all" className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h4 className="font-medium">Recent Notifications</h4>
+                <Button variant="ghost" size="sm" className="text-blue-600">
+                  Mark all as read
+                </Button>
+              </div>
+              
+              <div className="space-y-3">
+                {/* Project Notifications */}
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-blue-50 border-blue-200">
+                  <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-blue-900">Brand Story - Review Required</p>
+                      <span className="text-xs text-blue-600">2 min ago</span>
+                    </div>
+                    <p className="text-sm text-blue-700">Client has uploaded new feedback. Final cut review needed.</p>
+                    <div className="flex gap-2 mt-2">
+                      <Button size="sm" variant="default" className="text-xs h-6">View Project</Button>
+                      <Button size="sm" variant="ghost" className="text-xs h-6">Dismiss</Button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-orange-50 border-orange-200">
+                  <Clock className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-orange-900">Deadline Reminder</p>
+                      <span className="text-xs text-orange-600">15 min ago</span>
+                    </div>
+                    <p className="text-sm text-orange-700">Mountain Echoes final delivery due in 5 days (Mar 30)</p>
+                    <div className="flex gap-2 mt-2">
+                      <Button size="sm" variant="default" className="text-xs h-6">View Timeline</Button>
+                      <Button size="sm" variant="ghost" className="text-xs h-6">Snooze</Button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-green-50 border-green-200">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-green-900">Task Completed</p>
+                      <span className="text-xs text-green-600">1 hour ago</span>
+                    </div>
+                    <p className="text-sm text-green-700">Sarah Williams completed color grading for City Lights Scene 3</p>
+                    <div className="flex gap-2 mt-2">
+                      <Button size="sm" variant="default" className="text-xs h-6">Review Work</Button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <Users className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium">Team Update</p>
+                      <span className="text-xs text-gray-600">2 hours ago</span>
+                    </div>
+                    <p className="text-sm text-gray-700">Mike Johnson added to City Lights project as Cinematographer</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium">System Update</p>
+                      <span className="text-xs text-gray-600">1 day ago</span>
+                    </div>
+                    <p className="text-sm text-gray-700">New project templates are now available in the Templates section</p>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="projects" className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-blue-50 border-blue-200">
+                  <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-blue-900">Brand Story - Review Required</p>
+                      <span className="text-xs text-blue-600">2 min ago</span>
+                    </div>
+                    <p className="text-sm text-blue-700">Client has uploaded new feedback. Final cut review needed.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-orange-50 border-orange-200">
+                  <Clock className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-orange-900">Deadline Reminder</p>
+                      <span className="text-xs text-orange-600">15 min ago</span>
+                    </div>
+                    <p className="text-sm text-orange-700">Mountain Echoes final delivery due in 5 days (Mar 30)</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-green-50 border-green-200">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-green-900">Task Completed</p>
+                      <span className="text-xs text-green-600">1 hour ago</span>
+                    </div>
+                    <p className="text-sm text-green-700">Sarah Williams completed color grading for City Lights Scene 3</p>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="team" className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <Users className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium">New Team Member</p>
+                      <span className="text-xs text-gray-600">2 hours ago</span>
+                    </div>
+                    <p className="text-sm text-gray-700">Mike Johnson added to City Lights project as Cinematographer</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-yellow-50 border-yellow-200">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-yellow-900">Availability Update</p>
+                      <span className="text-xs text-yellow-600">3 hours ago</span>
+                    </div>
+                    <p className="text-sm text-yellow-700">Jane Smith marked as unavailable March 25-27 (vacation)</p>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="system" className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 p-3 border rounded-lg">
+                  <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium">System Update</p>
+                      <span className="text-xs text-gray-600">1 day ago</span>
+                    </div>
+                    <p className="text-sm text-gray-700">New project templates are now available in the Templates section</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 border rounded-lg bg-green-50 border-green-200">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-medium text-green-900">Backup Complete</p>
+                      <span className="text-xs text-green-600">2 days ago</span>
+                    </div>
+                    <p className="text-sm text-green-700">Weekly project backup completed successfully</p>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="border-t pt-4">
+            <div className="flex justify-between items-center">
+              <Button variant="outline" size="sm">
+                Notification Settings
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setIsNotificationsOpen(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Profile Modal */}
+      <Dialog open={isProfileModalOpen} onOpenChange={setIsProfileModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              User Profile
+            </DialogTitle>
+            <DialogDescription>
+              Manage your account information and preferences
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="profile" className="py-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="account">Account</TabsTrigger>
+              <TabsTrigger value="preferences">Preferences</TabsTrigger>
+              <TabsTrigger value="security">Security</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="profile" className="space-y-6">
+              <div className="flex items-start gap-6">
+                <div className="flex flex-col items-center space-y-4">
+                  <Avatar className="h-24 w-24">
+                    <AvatarImage src="/avatars/01.png" alt="@johndoe" />
+                    <AvatarFallback className="text-lg">JD</AvatarFallback>
+                  </Avatar>
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Camera className="h-4 w-4" />
+                    Change Photo
+                  </Button>
+                </div>
+                
+                <div className="flex-1 grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">First Name</label>
+                    <Input defaultValue="John" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Last Name</label>
+                    <Input defaultValue="Doe" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Job Title</label>
+                    <Input defaultValue="Project Manager" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Department</label>
+                    <Input defaultValue="Production" />
+                  </div>
+                  <div className="col-span-2 space-y-2">
+                    <label className="text-sm font-medium">Bio</label>
+                    <Textarea 
+                      defaultValue="Experienced project manager with 8+ years in film production. Specialized in managing complex documentary and commercial projects from pre-production through delivery."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="account" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Contact Information</CardTitle>
+                    <CardDescription>Your contact details and location</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-gray-500" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Email</p>
+                        <p className="text-sm text-gray-600">john.doe@tfhfilm.com</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-4 w-4 text-gray-500" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Phone</p>
+                        <p className="text-sm text-gray-600">+1 (555) 123-4567</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-4 w-4 text-gray-500" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Location</p>
+                        <p className="text-sm text-gray-600">Los Angeles, CA, USA</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Globe className="h-4 w-4 text-gray-500" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Timezone</p>
+                        <p className="text-sm text-gray-600">Pacific Standard Time (PST)</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Work Statistics</CardTitle>
+                    <CardDescription>Your contribution to projects</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Projects Managed</span>
+                      <span className="font-semibold">12</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Active Projects</span>
+                      <span className="font-semibold">3</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Completed This Year</span>
+                      <span className="font-semibold">9</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">On-Time Delivery Rate</span>
+                      <span className="font-semibold text-green-600">95%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Team Satisfaction</span>
+                      <span className="font-semibold text-blue-600">4.8/5</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="preferences" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Notification Preferences</CardTitle>
+                    <CardDescription>Choose what notifications you want to receive</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Email Notifications</p>
+                        <p className="text-sm text-gray-600">Receive project updates via email</p>
+                      </div>
+                      <input type="checkbox" defaultChecked className="rounded" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Deadline Reminders</p>
+                        <p className="text-sm text-gray-600">Get notified before project deadlines</p>
+                      </div>
+                      <input type="checkbox" defaultChecked className="rounded" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Team Updates</p>
+                        <p className="text-sm text-gray-600">Notifications about team member activities</p>
+                      </div>
+                      <input type="checkbox" defaultChecked className="rounded" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">System Updates</p>
+                        <p className="text-sm text-gray-600">Information about system maintenance</p>
+                      </div>
+                      <input type="checkbox" className="rounded" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Display Preferences</CardTitle>
+                    <CardDescription>Customize your interface</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Default View</label>
+                      <select className="w-full p-2 border rounded" defaultValue="Kanban Board">
+                        <option value="Kanban Board">Kanban Board</option>
+                        <option value="List View">List View</option>
+                        <option value="Calendar View">Calendar View</option>
+                      </select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Items per Page</label>
+                      <select className="w-full p-2 border rounded" defaultValue="50">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Dark Mode</p>
+                        <p className="text-sm text-gray-600">Switch to dark theme</p>
+                      </div>
+                      <input type="checkbox" className="rounded" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="security" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Password & Security</CardTitle>
+                    <CardDescription>Manage your account security</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Current Password</label>
+                      <Input type="password" placeholder="Enter current password" />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">New Password</label>
+                      <Input type="password" placeholder="Enter new password" />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Confirm New Password</label>
+                      <Input type="password" placeholder="Confirm new password" />
+                    </div>
+                    
+                    <Button className="w-full">Update Password</Button>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Two-Factor Authentication</CardTitle>
+                    <CardDescription>Add an extra layer of security</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">SMS Authentication</p>
+                        <p className="text-sm text-gray-600">+1 (555) ***-4567</p>
+                      </div>
+                      <Badge variant="secondary">Enabled</Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Authenticator App</p>
+                        <p className="text-sm text-gray-600">Not configured</p>
+                      </div>
+                      <Button variant="outline" size="sm">Setup</Button>
+                    </div>
+                    
+                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <p className="text-sm text-yellow-800">
+                        <strong>Last login:</strong> Today at 9:24 AM from Los Angeles, CA
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="border-t pt-4 flex justify-between">
+            <Button variant="outline" onClick={() => setIsProfileModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => {
+              alert('Profile updated successfully!')
+              setIsProfileModalOpen(false)
+            }}>
+              Save Changes
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </header>
