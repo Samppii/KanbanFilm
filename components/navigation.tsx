@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Film, Bell, Search, Plus, Settings, LogOut, User, LayoutDashboard, Calendar, Users, BarChart3 } from "lucide-react"
+import { Film, Bell, Search, Plus, Settings, LogOut, User, LayoutDashboard, Calendar, Users, BarChart3, TrendingUp } from "lucide-react"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Progress } from "@/components/ui/progress"
 
 export function Navigation() {
   const router = useRouter()
@@ -22,6 +23,8 @@ export function Navigation() {
   const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false)
   const [isTeamMembersModalOpen, setIsTeamMembersModalOpen] = useState(false)
   const [isTeamScheduleModalOpen, setIsTeamScheduleModalOpen] = useState(false)
+  const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false)
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
   
   const handleNavigation = (path: string) => {
@@ -168,7 +171,7 @@ export function Navigation() {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <button 
-                    onClick={() => alert('Analytics feature coming soon!')} 
+                    onClick={() => setIsAnalyticsModalOpen(true)} 
                     className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
                   >
                     Analytics
@@ -179,7 +182,7 @@ export function Navigation() {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <button 
-                    onClick={() => handleNavigation("/dashboard")} 
+                    onClick={() => setIsCalendarModalOpen(true)} 
                     className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
                   >
                     Calendar
@@ -727,6 +730,667 @@ export function Navigation() {
                           <div className="h-2 bg-orange-500 rounded w-5/6"></div>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">85% Complete</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Analytics Modal */}
+      <Dialog open={isAnalyticsModalOpen} onOpenChange={setIsAnalyticsModalOpen}>
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Analytics Dashboard</DialogTitle>
+            <DialogDescription>
+              Comprehensive analytics and insights for your film production projects
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="overview" className="py-4">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="projects">Projects</TabsTrigger>
+              <TabsTrigger value="team">Team</TabsTrigger>
+              <TabsTrigger value="financial">Financial</TabsTrigger>
+              <TabsTrigger value="performance">Performance</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="space-y-6">
+              {/* Key Metrics */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
+                    <Film className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">12</div>
+                    <p className="text-xs text-muted-foreground">+2 from last month</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">8</div>
+                    <p className="text-xs text-muted-foreground">67% of total projects</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">24</div>
+                    <p className="text-xs text-muted-foreground">5 available today</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+                    <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">$1.2M</div>
+                    <p className="text-xs text-muted-foreground">+15% from last quarter</p>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              {/* Project Status Overview */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Project Status Distribution</CardTitle>
+                    <CardDescription>Current status of all projects</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Active</span>
+                        <span className="text-sm font-medium">8 projects</span>
+                      </div>
+                      <Progress value={67} className="h-2" />
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Completed</span>
+                        <span className="text-sm font-medium">3 projects</span>
+                      </div>
+                      <Progress value={25} className="h-2" />
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">On Hold</span>
+                        <span className="text-sm font-medium">1 project</span>
+                      </div>
+                      <Progress value={8} className="h-2" />
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Monthly Performance</CardTitle>
+                    <CardDescription>Projects completed each month</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">January</span>
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-16 bg-blue-200 rounded">
+                            <div className="h-2 bg-blue-500 rounded w-3/4"></div>
+                          </div>
+                          <span className="text-sm font-medium">3</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">February</span>
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-16 bg-green-200 rounded">
+                            <div className="h-2 bg-green-500 rounded w-full"></div>
+                          </div>
+                          <span className="text-sm font-medium">4</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">March</span>
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-16 bg-orange-200 rounded">
+                            <div className="h-2 bg-orange-500 rounded w-1/2"></div>
+                          </div>
+                          <span className="text-sm font-medium">2</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="projects" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Project Types</CardTitle>
+                    <CardDescription>Distribution by project category</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Commercial</span>
+                        <span className="text-sm font-medium">5 projects (42%)</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Documentary</span>
+                        <span className="text-sm font-medium">3 projects (25%)</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Music Video</span>
+                        <span className="text-sm font-medium">2 projects (17%)</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Corporate</span>
+                        <span className="text-sm font-medium">2 projects (16%)</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Average Project Duration</CardTitle>
+                    <CardDescription>Time to completion by project type</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Commercial</span>
+                        <span className="text-sm font-medium">45 days</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Documentary</span>
+                        <span className="text-sm font-medium">120 days</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Music Video</span>
+                        <span className="text-sm font-medium">25 days</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Corporate</span>
+                        <span className="text-sm font-medium">30 days</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Project Pipeline</CardTitle>
+                  <CardDescription>Projects across all 9 stages</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 lg:grid-cols-9 gap-2">
+                    <div className="text-center">
+                      <div className="text-lg font-bold">2</div>
+                      <div className="text-xs text-muted-foreground">Initiation</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">1</div>
+                      <div className="text-xs text-muted-foreground">Pre-Prod</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">1</div>
+                      <div className="text-xs text-muted-foreground">Planning</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">2</div>
+                      <div className="text-xs text-muted-foreground">Production</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">1</div>
+                      <div className="text-xs text-muted-foreground">Post-Prod</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">1</div>
+                      <div className="text-xs text-muted-foreground">Review</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">1</div>
+                      <div className="text-xs text-muted-foreground">Delivery</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">0</div>
+                      <div className="text-xs text-muted-foreground">QA</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">3</div>
+                      <div className="text-xs text-muted-foreground">Complete</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="team" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Team Utilization</CardTitle>
+                    <CardDescription>Current workload distribution</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Production Team</span>
+                          <span>85%</span>
+                        </div>
+                        <Progress value={85} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Creative Team</span>
+                          <span>75%</span>
+                        </div>
+                        <Progress value={75} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Post-Production</span>
+                          <span>60%</span>
+                        </div>
+                        <Progress value={60} className="h-2" />
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span>Camera Team</span>
+                          <span>90%</span>
+                        </div>
+                        <Progress value={90} className="h-2" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Top Performers</CardTitle>
+                    <CardDescription>Most active team members this month</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">John Doe</span>
+                        <Badge variant="secondary">3 projects</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Jane Smith</span>
+                        <Badge variant="secondary">3 projects</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Mike Johnson</span>
+                        <Badge variant="outline">2 projects</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Sarah Williams</span>
+                        <Badge variant="outline">2 projects</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="financial" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Revenue</CardTitle>
+                    <CardDescription>Total revenue this year</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">$1,234,567</div>
+                    <p className="text-sm text-muted-foreground">+15% from last year</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Expenses</CardTitle>
+                    <CardDescription>Operating costs</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">$456,789</div>
+                    <p className="text-sm text-muted-foreground">37% of revenue</p>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Profit Margin</CardTitle>
+                    <CardDescription>Net profit percentage</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">63%</div>
+                    <p className="text-sm text-muted-foreground">Above industry average</p>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Revenue by Project Type</CardTitle>
+                  <CardDescription>Income distribution across project categories</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Commercial Videos</span>
+                      <span className="text-sm font-medium">$520,000 (42%)</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Documentary Films</span>
+                      <span className="text-sm font-medium">$370,000 (30%)</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Music Videos</span>
+                      <span className="text-sm font-medium">$210,000 (17%)</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Corporate Videos</span>
+                      <span className="text-sm font-medium">$134,567 (11%)</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="performance" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>On-Time Delivery</CardTitle>
+                    <CardDescription>Projects delivered on schedule</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-green-600">92%</div>
+                      <p className="text-sm text-muted-foreground">11 of 12 projects</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Client Satisfaction</CardTitle>
+                    <CardDescription>Average client rating</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-blue-600">4.8/5</div>
+                      <p className="text-sm text-muted-foreground">Based on 24 reviews</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Key Performance Indicators</CardTitle>
+                  <CardDescription>Performance metrics overview</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <div className="text-lg font-bold">98%</div>
+                      <div className="text-xs text-muted-foreground">Quality Score</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">85%</div>
+                      <div className="text-xs text-muted-foreground">Budget Efficiency</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">76%</div>
+                      <div className="text-xs text-muted-foreground">Resource Utilization</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold">12</div>
+                      <div className="text-xs text-muted-foreground">Avg Days to Complete</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Calendar Modal */}
+      <Dialog open={isCalendarModalOpen} onOpenChange={setIsCalendarModalOpen}>
+        <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Production Calendar</DialogTitle>
+            <DialogDescription>
+              Master calendar for all film production schedules and deadlines
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="month" className="py-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="month">Month View</TabsTrigger>
+              <TabsTrigger value="week">Week View</TabsTrigger>
+              <TabsTrigger value="timeline">Timeline</TabsTrigger>
+              <TabsTrigger value="deadlines">Deadlines</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="month" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold">March 2024</h3>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">← Previous</Button>
+                  <Button variant="outline" size="sm">Today</Button>
+                  <Button variant="outline" size="sm">Next →</Button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                <div className="p-2 text-center font-medium text-sm">Sun</div>
+                <div className="p-2 text-center font-medium text-sm">Mon</div>
+                <div className="p-2 text-center font-medium text-sm">Tue</div>
+                <div className="p-2 text-center font-medium text-sm">Wed</div>
+                <div className="p-2 text-center font-medium text-sm">Thu</div>
+                <div className="p-2 text-center font-medium text-sm">Fri</div>
+                <div className="p-2 text-center font-medium text-sm">Sat</div>
+              </div>
+              
+              <div className="grid grid-cols-7 gap-1">
+                {Array.from({ length: 35 }, (_, i) => (
+                  <div key={i} className="min-h-[80px] p-1 border border-border/50 rounded">
+                    <div className="text-xs font-medium mb-1">
+                      {i + 1 <= 31 ? i + 1 : ''}
+                    </div>
+                    <div className="space-y-1">
+                      {i === 4 && <div className="text-xs bg-blue-100 text-blue-800 p-1 rounded">Mountain Echoes</div>}
+                      {i === 10 && <div className="text-xs bg-green-100 text-green-800 p-1 rounded">City Lights</div>}
+                      {i === 15 && <div className="text-xs bg-orange-100 text-orange-800 p-1 rounded">Brand Story</div>}
+                      {i === 20 && <div className="text-xs bg-purple-100 text-purple-800 p-1 rounded">Team Meeting</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="week" className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold">Week of March 18-24, 2024</h3>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">← Previous Week</Button>
+                  <Button variant="outline" size="sm">This Week</Button>
+                  <Button variant="outline" size="sm">Next Week →</Button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-8 gap-2">
+                <div className="font-medium"></div>
+                <div className="text-center font-medium text-sm">Mon 18</div>
+                <div className="text-center font-medium text-sm">Tue 19</div>
+                <div className="text-center font-medium text-sm">Wed 20</div>
+                <div className="text-center font-medium text-sm">Thu 21</div>
+                <div className="text-center font-medium text-sm">Fri 22</div>
+                <div className="text-center font-medium text-sm">Sat 23</div>
+                <div className="text-center font-medium text-sm">Sun 24</div>
+                
+                <div className="text-sm font-medium">9 AM</div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded bg-blue-50">
+                  <div className="text-xs p-1">Mountain Echoes - Editing</div>
+                </div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                
+                <div className="text-sm font-medium">12 PM</div>
+                <div className="h-12 border rounded bg-green-50">
+                  <div className="text-xs p-1">City Lights - Shoot</div>
+                </div>
+                <div className="h-12 border rounded bg-green-50">
+                  <div className="text-xs p-1">City Lights - Shoot</div>
+                </div>
+                <div className="h-12 border rounded bg-green-50">
+                  <div className="text-xs p-1">City Lights - Shoot</div>
+                </div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                
+                <div className="text-sm font-medium">3 PM</div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded bg-purple-50">
+                  <div className="text-xs p-1">Team Meeting</div>
+                </div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded bg-orange-50">
+                  <div className="text-xs p-1">Brand Story - Review</div>
+                </div>
+                <div className="h-12 border rounded"></div>
+                <div className="h-12 border rounded"></div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="timeline" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Project Timeline</CardTitle>
+                  <CardDescription>Visual timeline of all active projects</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="relative">
+                      <div className="flex items-center mb-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                        <span className="font-medium">Mountain Echoes</span>
+                        <span className="text-sm text-muted-foreground ml-2">Jan 15 - Mar 30</span>
+                      </div>
+                      <div className="ml-6 pl-3 border-l-2 border-blue-200">
+                        <div className="h-3 bg-blue-500 rounded w-3/4 mb-1"></div>
+                        <div className="text-xs text-muted-foreground">75% Complete - Post-Production</div>
+                      </div>
+                    </div>
+                    
+                    <div className="relative">
+                      <div className="flex items-center mb-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <span className="font-medium">City Lights</span>
+                        <span className="text-sm text-muted-foreground ml-2">Feb 1 - Jun 15</span>
+                      </div>
+                      <div className="ml-6 pl-3 border-l-2 border-green-200">
+                        <div className="h-3 bg-green-500 rounded w-1/3 mb-1"></div>
+                        <div className="text-xs text-muted-foreground">30% Complete - Pre-Production</div>
+                      </div>
+                    </div>
+                    
+                    <div className="relative">
+                      <div className="flex items-center mb-2">
+                        <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
+                        <span className="font-medium">Brand Story</span>
+                        <span className="text-sm text-muted-foreground ml-2">Jan 5 - Feb 28</span>
+                      </div>
+                      <div className="ml-6 pl-3 border-l-2 border-orange-200">
+                        <div className="h-3 bg-orange-500 rounded w-5/6 mb-1"></div>
+                        <div className="text-xs text-muted-foreground">85% Complete - Client Review</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="deadlines" className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-red-600">Urgent Deadlines</CardTitle>
+                    <CardDescription>Due within 7 days</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 border border-red-200 rounded-lg bg-red-50">
+                        <div>
+                          <div className="font-medium">Brand Story - Final Cut</div>
+                          <div className="text-sm text-muted-foreground">Due: Feb 28</div>
+                        </div>
+                        <Badge variant="destructive">2 days</Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-3 border border-orange-200 rounded-lg bg-orange-50">
+                        <div>
+                          <div className="font-medium">City Lights - Script Review</div>
+                          <div className="text-sm text-muted-foreground">Due: Mar 5</div>
+                        </div>
+                        <Badge variant="outline">5 days</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-blue-600">Upcoming Deadlines</CardTitle>
+                    <CardDescription>Due within 30 days</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <div className="font-medium">Mountain Echoes - Delivery</div>
+                          <div className="text-sm text-muted-foreground">Due: Mar 30</div>
+                        </div>
+                        <Badge variant="secondary">28 days</Badge>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <div className="font-medium">New Commercial - Kickoff</div>
+                          <div className="text-sm text-muted-foreground">Due: Mar 15</div>
+                        </div>
+                        <Badge variant="secondary">13 days</Badge>
                       </div>
                     </div>
                   </CardContent>
