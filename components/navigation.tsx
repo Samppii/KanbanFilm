@@ -13,11 +13,15 @@ import { Input } from "@/components/ui/input"
 import { AddProjectModal } from "@/components/add-project-modal"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function Navigation() {
   const router = useRouter()
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false)
   const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false)
+  const [isTeamMembersModalOpen, setIsTeamMembersModalOpen] = useState(false)
+  const [isTeamScheduleModalOpen, setIsTeamScheduleModalOpen] = useState(false)
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
   
   const handleNavigation = (path: string) => {
@@ -134,7 +138,7 @@ export function Navigation() {
                     <li>
                       <NavigationMenuLink asChild>
                         <button 
-                          onClick={() => alert('Team Members feature coming soon!')} 
+                          onClick={() => setIsTeamMembersModalOpen(true)} 
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left"
                         >
                           <div className="text-sm font-medium leading-none">Team Members</div>
@@ -147,7 +151,7 @@ export function Navigation() {
                     <li>
                       <NavigationMenuLink asChild>
                         <button 
-                          onClick={() => alert('Team Schedule feature coming soon!')} 
+                          onClick={() => setIsTeamScheduleModalOpen(true)} 
                           className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground w-full text-left"
                         >
                           <div className="text-sm font-medium leading-none">Schedule</div>
@@ -382,6 +386,354 @@ export function Navigation() {
               </CardContent>
             </Card>
           </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Team Members Modal */}
+      <Dialog open={isTeamMembersModalOpen} onOpenChange={setIsTeamMembersModalOpen}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Team Members</DialogTitle>
+            <DialogDescription>
+              Manage your film production team members and their roles
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="active" className="py-4">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="active">Active Members</TabsTrigger>
+              <TabsTrigger value="roles">Roles & Departments</TabsTrigger>
+              <TabsTrigger value="add">Add Member</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="active" className="space-y-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Contact</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Current Project</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">John Doe</TableCell>
+                    <TableCell>Project Manager</TableCell>
+                    <TableCell>Production</TableCell>
+                    <TableCell>john@tfhfilm.com</TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell>Mountain Echoes</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Jane Smith</TableCell>
+                    <TableCell>Director</TableCell>
+                    <TableCell>Creative</TableCell>
+                    <TableCell>jane@tfhfilm.com</TableCell>
+                    <TableCell><Badge variant="destructive">Busy</Badge></TableCell>
+                    <TableCell>City Lights</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Mike Johnson</TableCell>
+                    <TableCell>Cinematographer</TableCell>
+                    <TableCell>Camera</TableCell>
+                    <TableCell>mike@tfhfilm.com</TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell>-</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Sarah Williams</TableCell>
+                    <TableCell>Editor</TableCell>
+                    <TableCell>Post-Production</TableCell>
+                    <TableCell>sarah@tfhfilm.com</TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                    <TableCell>Brand Story</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Alex Chen</TableCell>
+                    <TableCell>Sound Engineer</TableCell>
+                    <TableCell>Audio</TableCell>
+                    <TableCell>alex@tfhfilm.com</TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell>-</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TabsContent>
+            
+            <TabsContent value="roles" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Production</CardTitle>
+                    <CardDescription>Core production team</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>• Project Manager (1)</li>
+                      <li>• Producer (2)</li>
+                      <li>• Assistant Director (3)</li>
+                      <li>• Script Supervisor (1)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Creative</CardTitle>
+                    <CardDescription>Creative department</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>• Director (2)</li>
+                      <li>• Screenwriter (3)</li>
+                      <li>• Creative Director (1)</li>
+                      <li>• Art Director (2)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Camera</CardTitle>
+                    <CardDescription>Camera & lighting crew</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>• Cinematographer (2)</li>
+                      <li>• Camera Operator (4)</li>
+                      <li>• Gaffer (2)</li>
+                      <li>• Grip (6)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Post-Production</CardTitle>
+                    <CardDescription>Editing & finishing</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>• Editor (3)</li>
+                      <li>• Colorist (2)</li>
+                      <li>• Motion Graphics (2)</li>
+                      <li>• VFX Artist (4)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Audio</CardTitle>
+                    <CardDescription>Sound department</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>• Sound Engineer (2)</li>
+                      <li>• Boom Operator (3)</li>
+                      <li>• Sound Designer (2)</li>
+                      <li>• Composer (1)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Support</CardTitle>
+                    <CardDescription>Support roles</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 text-sm">
+                      <li>• Client Relations (2)</li>
+                      <li>• Coordinator (3)</li>
+                      <li>• Intern (5)</li>
+                      <li>• Freelancer Pool (12)</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="add" className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Full Name</label>
+                  <Input placeholder="Enter full name" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Email</label>
+                  <Input type="email" placeholder="Enter email address" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Role</label>
+                  <Input placeholder="e.g., Cinematographer" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Department</label>
+                  <Input placeholder="e.g., Camera" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Phone</label>
+                  <Input placeholder="Enter phone number" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Hourly Rate</label>
+                  <Input type="number" placeholder="e.g., 45" />
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button variant="outline" onClick={() => setIsTeamMembersModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={() => {
+                  alert('Team member would be added to the system')
+                  setIsTeamMembersModalOpen(false)
+                }}>
+                  Add Team Member
+                </Button>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Team Schedule Modal */}
+      <Dialog open={isTeamScheduleModalOpen} onOpenChange={setIsTeamScheduleModalOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Team Schedule</DialogTitle>
+            <DialogDescription>
+              View team availability and project scheduling
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Tabs defaultValue="calendar" className="py-4">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="calendar">Calendar View</TabsTrigger>
+              <TabsTrigger value="availability">Availability</TabsTrigger>
+              <TabsTrigger value="projects">Project Timeline</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="calendar" className="space-y-4">
+              <div className="bg-muted/20 p-6 rounded-lg text-center">
+                <h3 className="text-lg font-semibold mb-2">Team Calendar</h3>
+                <p className="text-muted-foreground mb-4">Interactive team scheduling calendar would be displayed here</p>
+                <div className="grid grid-cols-7 gap-1 text-xs">
+                  <div className="p-2 font-medium">Mon</div>
+                  <div className="p-2 font-medium">Tue</div>
+                  <div className="p-2 font-medium">Wed</div>
+                  <div className="p-2 font-medium">Thu</div>
+                  <div className="p-2 font-medium">Fri</div>
+                  <div className="p-2 font-medium">Sat</div>
+                  <div className="p-2 font-medium">Sun</div>
+                  
+                  {Array.from({ length: 35 }, (_, i) => (
+                    <div key={i} className="p-2 border border-border/50 rounded min-h-[60px] text-xs">
+                      {i + 1 <= 31 ? i + 1 : ''}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="availability" className="space-y-4">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Team Member</TableHead>
+                    <TableHead>Mon</TableHead>
+                    <TableHead>Tue</TableHead>
+                    <TableHead>Wed</TableHead>
+                    <TableHead>Thu</TableHead>
+                    <TableHead>Fri</TableHead>
+                    <TableHead>Weekend</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium">John Doe</TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="destructive">Busy</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Jane Smith</TableCell>
+                    <TableCell><Badge variant="destructive">Busy</Badge></TableCell>
+                    <TableCell><Badge variant="destructive">Busy</Badge></TableCell>
+                    <TableCell><Badge variant="destructive">Busy</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Off</Badge></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Mike Johnson</TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                    <TableCell><Badge variant="destructive">Busy</Badge></TableCell>
+                    <TableCell><Badge variant="secondary">Available</Badge></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium">Sarah Williams</TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Off</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Part-time</Badge></TableCell>
+                    <TableCell><Badge variant="outline">Off</Badge></TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TabsContent>
+            
+            <TabsContent value="projects" className="space-y-4">
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Active Project Timelines</CardTitle>
+                    <CardDescription>Current project schedules and team assignments</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="border-l-4 border-l-blue-500 pl-4">
+                        <h4 className="font-semibold">Mountain Echoes</h4>
+                        <p className="text-sm text-muted-foreground">Jan 15 - Mar 30 • Team: John, Mike, Alex</p>
+                        <div className="mt-2 h-2 bg-blue-100 rounded">
+                          <div className="h-2 bg-blue-500 rounded w-3/4"></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">75% Complete</p>
+                      </div>
+                      
+                      <div className="border-l-4 border-l-green-500 pl-4">
+                        <h4 className="font-semibold">City Lights</h4>
+                        <p className="text-sm text-muted-foreground">Feb 1 - Jun 15 • Team: Jane, Sarah</p>
+                        <div className="mt-2 h-2 bg-green-100 rounded">
+                          <div className="h-2 bg-green-500 rounded w-1/3"></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">30% Complete</p>
+                      </div>
+                      
+                      <div className="border-l-4 border-l-orange-500 pl-4">
+                        <h4 className="font-semibold">Brand Story</h4>
+                        <p className="text-sm text-muted-foreground">Jan 5 - Feb 28 • Team: Sarah, Alex</p>
+                        <div className="mt-2 h-2 bg-orange-100 rounded">
+                          <div className="h-2 bg-orange-500 rounded w-5/6"></div>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">85% Complete</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
     </header>
